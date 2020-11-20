@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ceuci.feiraLivre.model.UserLogin;
+import com.ceuci.feiraLivre.model.UsuarioLogin;
 import com.ceuci.feiraLivre.model.UsuarioModel;
 import com.ceuci.feiraLivre.repository.UsuarioRepository;
 
@@ -20,16 +20,19 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepository repository;
 	
-	public UsuarioModel cadastrarUsuario(UsuarioModel usuario) {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+	public Optional<UsuarioModel> cadastrarUsuario(UsuarioModel usuario) {
+		if(repository.findByEmail(usuario.getEmail()).isPresent())  
+			return null;
 		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
 		String senhaEncoder = encoder.encode(usuario.getSenha());
 		usuario.setSenha(senhaEncoder);
-	
-		return repository.save(usuario);
+
+		return Optional.of(repository.save(usuario));
 	}
 	
-	public Optional<UserLogin> logar(Optional<UserLogin> user){
+	public Optional<UsuarioLogin> logar(Optional<UsuarioLogin> user){
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		Optional<UsuarioModel> usuario = repository.findByEmail(user.get().getEmail());
 		

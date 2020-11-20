@@ -1,6 +1,6 @@
 package com.ceuci.feiraLivre.model;
 
-public class UserLogin {
+public class UsuarioLogin {
 
 	//ATRIBUTOS
 	private String nome;

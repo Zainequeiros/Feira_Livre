@@ -26,11 +26,13 @@ public class ProdutoController {
 	@Autowired
 	private ProdutoRepository repository;
 	
+	//Pegar todos os produtos
 	@GetMapping
 	public ResponseEntity<List<ProdutoModel>> GetAll(){
 		return ResponseEntity.ok(repository.findAll());
-		
 	}
+	
+	//Pegar por ID
 	@GetMapping("/{id}")
 	public ResponseEntity<ProdutoModel> GetById(@PathVariable Long id){
 		return repository.findById(id)
@@ -38,21 +40,26 @@ public class ProdutoController {
 				.orElse(ResponseEntity.notFound().build());
 				
 	}
-	@GetMapping("/titulo/{titulo}")
-	public ResponseEntity<List<ProdutoModel>> getByTitulo(@PathVariable String nome){
+	
+	//Pegar por nome do produto
+	@GetMapping("/titulo/{nome}")
+	public ResponseEntity<List<ProdutoModel>> getByNome(@PathVariable String nome){
 		return ResponseEntity.ok(repository.findAllByNomeContainingIgnoreCase(nome));
 	}
 	
+	//Incluir
 	@PostMapping
 	public ResponseEntity<ProdutoModel> post (@RequestBody ProdutoModel postagem){
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
 	}
 	
+	//Atualizar
 	@PutMapping
 	public ResponseEntity<ProdutoModel> put (@RequestBody ProdutoModel postagem){
 		return ResponseEntity.status(HttpStatus.OK).body(repository.save(postagem));
 	}
 	
+	//Deletar
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Long id) {
 		repository.deleteById(id);

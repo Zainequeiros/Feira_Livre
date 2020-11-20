@@ -11,4 +11,6 @@ public interface EnderecoRepository extends JpaRepository<EnderecoModel, Long>{
 
 	@Query(value = "select * from endereco where cidade like 'S%' ", nativeQuery=true)
 	List<EnderecoModel> findAllByCidadeS();
+	
+	public List<EnderecoModel> findAllByCidadeContainingIgnoreCase (String cidade);
 }

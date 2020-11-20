@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ceuci.feiraLivre.model.UserLogin;
+import com.ceuci.feiraLivre.model.UsuarioLogin;
 import com.ceuci.feiraLivre.model.UsuarioModel;
 import com.ceuci.feiraLivre.repository.UsuarioRepository;
 import com.ceuci.feiraLivre.service.UsuarioService;
@@ -33,11 +33,14 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioService usuarioService;
 	
+	//Ver todos os usuarios
 	@GetMapping
 	public ResponseEntity<List<UsuarioModel>> GetAll(){
 		return ResponseEntity.ok(repository.findAll());
 		
 	}
+	
+	//Ver usuario por Id
 	@GetMapping("/{id}")
 	public ResponseEntity<UsuarioModel> GetById(@PathVariable long id){
 		return repository.findById(id)
@@ -45,34 +48,47 @@ public class UsuarioController {
 				.orElse(ResponseEntity.notFound().build());
 				
 	}
-	@GetMapping("/titulo/{titulo}")
-	public ResponseEntity<List<UsuarioModel>> getByTitulo(@PathVariable String nome){
+	
+	//Pegar por nome 
+	@GetMapping("/nome/{nome}")
+	public ResponseEntity<List<UsuarioModel>> getByNome(@PathVariable String nome){
 		return ResponseEntity.ok(repository.findAllByNomeContainingIgnoreCase(nome));
 	}
 	
+	//Inserir
 	@PostMapping
 	public ResponseEntity<UsuarioModel> postUsuario (@RequestBody UsuarioModel postagem){
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
 	}
 	
+	//Login usuario
 	@PostMapping("/logar")
-	public ResponseEntity<UserLogin> authentication(@RequestBody Optional<UserLogin> user){
+	public ResponseEntity<UsuarioLogin> authentication(@RequestBody Optional<UsuarioLogin> user){
 		return usuarioService.logar(user).map(resp -> ResponseEntity.ok(resp))
 				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
+	
+	//Cadastrar usuario
 	@PostMapping("/cadastrar")
 	public ResponseEntity<UsuarioModel> post(@RequestBody UsuarioModel usuario){
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(usuarioService.cadastrarUsuario(usuario));
+		Optional<UsuarioModel> user = usuarioService.cadastrarUsuario(usuario);
+		
+		try {
+				return ResponseEntity.ok(user.get());
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
 	}
 	
+	//Modificar
 	@PutMapping
 	public ResponseEntity<UsuarioModel> put (@RequestBody UsuarioModel postagem){
 		return ResponseEntity.status(HttpStatus.OK).body(repository.save(postagem));
 	}
 	
+	//Deletar
 	@DeleteMapping("/{id}")
-	public void delete(@PathVariable Long id) {
+	public void deleteById(@PathVariable Long id) {
 		repository.deleteById(id);
 	}
 }

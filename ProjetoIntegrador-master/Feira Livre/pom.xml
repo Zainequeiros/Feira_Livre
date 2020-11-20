@@ -12,6 +12,7 @@
 	<groupId>com.ceuci.feiralivre</groupId>
 	<artifactId>feiralivre</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>ProjetoIntegrador</name>
 	<description>Demo project for Spring Boot</description>
 
