@@ -15,44 +15,49 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ceuci.feiraLivre.model.CategoriaModel;
-import com.ceuci.feiraLivre.repository.CategoriaRepository;
+import com.ceuci.feiraLivre.model.PedidoModel;
+import com.ceuci.feiraLivre.repository.PedidoRepository;
+import com.ceuci.feiraLivre.service.ItensService;
 
 @RestController
-@RequestMapping("/categoria")
+@RequestMapping("/pedido")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class CategoriaController {
+public class PedidoController {
+	@Autowired
+	private PedidoRepository repository;
 	
 	@Autowired
-	private CategoriaRepository repository;
+	private ItensService itensService;
 	
-	//Pegar todas as categotias
+	
+	//Pegar todos os pedidos
 	@GetMapping
-	public ResponseEntity<List<CategoriaModel>> getAll(){
+	public ResponseEntity<List<PedidoModel>> getAll(){
 		return ResponseEntity.ok(repository.findAll());
 	}
 	
-	//Categoria por ID
+	//Pedido por ID
 	@GetMapping("/{id}")
-	public ResponseEntity<CategoriaModel> getById(@PathVariable Long id){
+	public ResponseEntity<PedidoModel> getById(@PathVariable Long id){
 		return repository.findById(id).map(resp -> ResponseEntity.ok(resp)).orElse(ResponseEntity.notFound().build());
 	}
 	
-	@GetMapping("/nome/{nome}")
-	public ResponseEntity<List<CategoriaModel>> getByNameCategoria(@PathVariable String categoria){
-		return ResponseEntity.ok(repository.findAllByCategoriaContainingIgnoreCase(categoria));
+	//Pedidos acima de 100 reais
+	@GetMapping(value = "/maiorDe100")
+	public ResponseEntity<List<PedidoModel>> findAllMaiorDe100(){
+		return ResponseEntity.ok(repository.findAllMaiorDe100());
 	}
 	
 	//Inserir
 	@PostMapping
-	public ResponseEntity<CategoriaModel> post(@RequestBody CategoriaModel categoria){
-		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(categoria));
+	public ResponseEntity<PedidoModel> post(@RequestBody PedidoModel pedido){
+		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(itensService.salvarItens(pedido)));
 	}
 	
 	//Atualizar
 	@PutMapping
-	public ResponseEntity<CategoriaModel> put(@RequestBody CategoriaModel categoria){
-		return ResponseEntity.ok(repository.save(categoria));
+	public ResponseEntity<PedidoModel> put(@RequestBody PedidoModel pedido){
+		return ResponseEntity.ok(repository.save(pedido));
 	}
 	
 	//Deletar
@@ -60,5 +65,4 @@ public class CategoriaController {
 	public void delete(@PathVariable Long id) {
 		repository.deleteById(id);
 	}
-
 }

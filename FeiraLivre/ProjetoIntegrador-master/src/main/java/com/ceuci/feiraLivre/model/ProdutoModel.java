@@ -1,11 +1,16 @@
 package com.ceuci.feiraLivre.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -41,9 +46,12 @@ public class ProdutoModel {
 	@JsonIgnoreProperties("produto")
 	private ProdutorModel produtor;
 	
+	@OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("produto")
+	private List<ItensModel> itens = new ArrayList<ItensModel>();
+	
 	
 	//GETTERS AND SETTERS
-
 	public Long getId() {
 		return id;
 	}
@@ -90,6 +98,14 @@ public class ProdutoModel {
 
 	public void setCategoria(CategoriaModel categoria) {
 		this.categoria = categoria;
+	}
+
+	public List<ItensModel> getItens() {
+		return itens;
+	}
+
+	public void setItens(List<ItensModel> itens) {
+		this.itens = itens;
 	}
 
 }

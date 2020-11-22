@@ -1,13 +1,17 @@
 package com.ceuci.feiraLivre.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -38,7 +42,18 @@ public class PedidoModel {
 	@JsonIgnoreProperties
 	private UsuarioModel usuario;
 	
+	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("pedido")
+	private List<ItensModel> itens = new ArrayList<ItensModel>();
 	
+	
+	//CONSTRUTORES
+	public PedidoModel() {}
+	
+	public PedidoModel(Long id) {
+		this.id = id;
+	}
+
 	//GETTERS AND SETTERS
 	public Long getId() {
 		return id;
@@ -78,6 +93,14 @@ public class PedidoModel {
 
 	public void setUsuario(UsuarioModel usuario) {
 		this.usuario = usuario;
+	}
+
+	public List<ItensModel> getItens() {
+		return itens;
+	}
+
+	public void setItens(List<ItensModel> itens) {
+		this.itens = itens;
 	}
 	
 	
